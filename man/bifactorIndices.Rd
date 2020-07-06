@@ -4,8 +4,13 @@
 \alias{bifactorIndices}
 \title{bifactorIndices}
 \usage{
-bifactorIndices(Lambda, Theta = NULL, UniLambda = NULL,
-  standardized = TRUE, Phi = NULL)
+bifactorIndices(
+  Lambda,
+  Theta = NULL,
+  UniLambda = NULL,
+  standardized = TRUE,
+  Phi = NULL
+)
 }
 \arguments{
 \item{Lambda}{is a matrix of factor loadings or an object that can be converted to a
@@ -156,6 +161,8 @@ response theory models. \emph{Structural Equation Modeling: A Multidisciplinary 
 \seealso{
 \code{\link{bifactorIndicesMplus}},
          \code{\link{bifactorIndices_expl}},
+         \code{\link{bifactorIndicesMplus_expl}},
+         \code{\link{bifactorIndicesMplus_ESEM}},
          \code{\link{ECV_SS}},
          \code{\link{ECV_SG}},
          \code{\link{ECV_GS}},

@@ -48,6 +48,8 @@
 #' @seealso
 #'          \code{\link{bifactorIndicesMplus}},
 #'          \code{\link{bifactorIndices_expl}},
+#'          \code{\link{bifactorIndicesMplus_expl}},
+#'          \code{\link{bifactorIndicesMplus_ESEM}},
 #'          \code{\link{ECV_SS}},
 #'          \code{\link{ECV_SG}},
 #'          \code{\link{ECV_GS}},
@@ -266,6 +268,7 @@ bifactorIndices <- function(Lambda, Theta = NULL, UniLambda = NULL, standardized
 #'
 #' @seealso \code{\link{bifactorIndices}},
 #'          \code{\link{bifactorIndices_expl}},
+#'          \code{\link{bifactorIndicesMplus_expl}},
 #'          \code{\link{bifactorIndicesMplus_ESEM}},
 #'          \code{\link{ECV_SS}},
 #'          \code{\link{ECV_SG}},

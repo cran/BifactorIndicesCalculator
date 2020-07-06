@@ -5,8 +5,8 @@
 #' @param Lambda is a factor loading matrix from EFA or an object which can be converted to such.
 #' Currently only \code{psych::fa()} objects are supported.
 #'
-#' @param ItemsBySF is a list, indexed by factor, of vectors of item names belonging to each
-#' factor. You must include the general factor in this list, and the list must have names which
+#' @param ItemsBySF is a list, indexed by factor, of vectors of item names belonging to each specific
+#' factor. You must NOT include the general factor in this list, and the list must have names which
 #' match the factor names in \code{Lambda}. It is recommended you look at the EFA solution first
 #' to see which factor is which. Defaults to \code{NULL}, in which case composition of specific
 #' factors is automated by comparing loadings to \code{LoadMin}
@@ -25,6 +25,7 @@
 #'
 #' @seealso \code{\link{bifactorIndices}},
 #'          \code{\link{bifactorIndicesMplus}},
+#'          \code{\link{bifactorIndicesMplus_expl}},
 #'          \code{\link{bifactorIndicesMplus_ESEM}},
 #'          \code{\link{ECV_SS}},
 #'          \code{\link{ECV_SG}},
@@ -84,6 +85,10 @@ bifactorIndices_expl <- function(Lambda, ItemsBySF = NULL, LoadMin = 0.2) {
     if (length(ItemsBySF) == length(Factors) - 1) {
       GenFac <- setdiff(Factors, names(ItemsBySF))
       ItemsBySF[[paste(GenFac)]] <- Items
+      # We also need to reorder ItemsBySF so it matches the order of Factors.
+      # I think everything below this should be completely redone to avoid the confusion
+      # of two different lists of factors!!
+      ItemsBySF <- ItemsBySF[Factors]
     } else {
       stop("An error was made in the specification of ItemsBySF. It should have one fewer
             elements than the total number of factors")
@@ -93,10 +98,10 @@ bifactorIndices_expl <- function(Lambda, ItemsBySF = NULL, LoadMin = 0.2) {
     for (I in Items) {
       for (Fac in Factors) {
         if (!(I %in% ItemsBySF[[Fac]]) & (Lambda[I,Fac] > LoadMin)) {
-          warning(paste0("Item ", I, " loads on factor ", Fac, "above ", LoadMin))
+          warning(paste0("Item ", I, " loads on factor ", Fac, " above ", LoadMin))
         }
         if ((I %in% ItemsBySF[[Fac]]) & (Lambda[I,Fac] < LoadMin)) {
-          warning(paste0("Item ", I, " loads on factor ", Fac, "below ", LoadMin))
+          warning(paste0("Item ", I, " loads on factor ", Fac, " below ", LoadMin))
         }
       }
     }
@@ -105,7 +110,7 @@ bifactorIndices_expl <- function(Lambda, ItemsBySF = NULL, LoadMin = 0.2) {
   # Is there single factor that pervades all items
   FactorLengths <- sapply(ItemsBySF, length)
 
-  # Issue a warning if no true gneral factor
+  # Issue a warning if no true general factor
   if (max(FactorLengths) != nrow(Lambda)) warning("The exploratory model has no general factor")
 
   ## Some of the indices we want involve all items
@@ -153,9 +158,9 @@ bifactorIndices_expl <- function(Lambda, ItemsBySF = NULL, LoadMin = 0.2) {
 }
 
 
-#' bifactorIndicesMplus_ESEM
+#' bifactorIndicesMplus_expl
 #'
-#' Computes all available bifactor indices given an \code{Mplus} .out file for a bifactor ESEM
+#' Computes all available bifactor indices given an \code{Mplus} .out file for a bifactor EFA
 #'
 #' @param Lambda is an Mplus .out file. Defaults to an open file dialog box
 #'
@@ -174,6 +179,48 @@ bifactorIndices_expl <- function(Lambda, ItemsBySF = NULL, LoadMin = 0.2) {
 #' OmegaH.
 #'
 #' @details To use this function, simply call it without any arguments and a dialog box
+#' will pop up for you to select a .out file of an exploratory bifactor model.
+#'
+#' EFA models are not currently (3/3/2020) supported by \code{MplsuAutomation::ReadModels()},
+#' but they will be in the very near future, at which time this function will be completed.
+#'
+#' @seealso \code{\link{bifactorIndices}},
+#'          \code{\link{bifactorIndicesMplus}},
+#'          \code{\link{bifactorIndicesMplus_ESEM}},
+#'          \code{\link{bifactorIndices_expl}}
+#'
+#'
+#' @export
+#'
+bifactorIndicesMplus_expl <- function(Lambda = file.choose(), ItemsBySF = NULL, LoadMin = 0.2) {
+  ## If Lambda hasn't been put through MplusAutomation::readModels, then we need to do that
+  if (!("mplus.model" %in% class(Lambda))) {Lambda <- MplusAutomation::readModels(Lambda)}
+
+  stop("MplusAutomation does not support EFA output yet, but should soon!")
+}
+
+
+#' bifactorIndicesMplus_ESEM
+#'
+#' Computes all available bifactor indices given an \code{Mplus} .out file for a bifactor ESEM
+#'
+#' @param Lambda is an Mplus .out file. Defaults to an open file dialog box
+#'
+#' @param ItemsBySF is a list, indexed by factor, of vectors of item names belonging to each
+#' factor. You must NOT include the general factor in this list, and the list must have names which
+#' match the factor names in Mplus. Defaults to \code{NULL}, in which case composition of specific
+#' factors is automated by comparing loadings to \code{LoadMin}
+#'
+#' @param LoadMin is the minimum loading size so that an item is considered to "belong" to a factor.
+#' If \code{ItemsBySF} is not provided, then items are assigned to factors based on whether their
+#' loading on that factor is greater than \code{LoadMin}. If \code{ItemsBySF} is provided, then
+#' warnings are issued whenever items load above \code{LoadMin} on factors to which they do not belong,
+#' or do not load above \code{LoadMin} on factors to which they do belong,
+#'
+#' @return A list of bifactor indices, including three different ECV indices, Omega, and
+#' OmegaH.
+#'
+#' @details To use this function, simply call it without any arguments and a dialog box
 #' will pop up for you to select a .out file for an ESEM model.
 #'
 #' Only standardized models are considered for exploratory models. PUC and ARPB are not
@@ -181,6 +228,7 @@ bifactorIndices_expl <- function(Lambda, ItemsBySF = NULL, LoadMin = 0.2) {
 #'
 #' @seealso \code{\link{bifactorIndices}},
 #'          \code{\link{bifactorIndicesMplus}},
+#'          \code{\link{bifactorIndicesMplus_expl}},
 #'          \code{\link{bifactorIndices_expl}}
 #'
 #'
@@ -196,5 +244,5 @@ bifactorIndicesMplus_ESEM <- function(Lambda = file.choose(),
   ## Now we need to fish out the factor loading matrix
   Lambda <- getLambda(Lambda)
 
-  bifactorIndices_expl(Lambda, ItemsBySF = NULL, LoadMin = 0.2)
+  bifactorIndices_expl(Lambda, ItemsBySF = ItemsBySF, LoadMin = LoadMin)
 }

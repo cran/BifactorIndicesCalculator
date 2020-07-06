@@ -4,8 +4,11 @@
 \alias{bifactorIndicesMplus}
 \title{bifactorIndicesMplus}
 \usage{
-bifactorIndicesMplus(Lambda = file.choose(), UniLambda = NULL,
-  standardized = TRUE)
+bifactorIndicesMplus(
+  Lambda = file.choose(),
+  UniLambda = NULL,
+  standardized = TRUE
+)
 }
 \arguments{
 \item{Lambda}{is an Mplus .out file. Defaults to an open file dialog box}
@@ -41,6 +44,7 @@ man page for the individual indices.
 \seealso{
 \code{\link{bifactorIndices}},
          \code{\link{bifactorIndices_expl}},
+         \code{\link{bifactorIndicesMplus_expl}},
          \code{\link{bifactorIndicesMplus_ESEM}},
          \code{\link{ECV_SS}},
          \code{\link{ECV_SG}},

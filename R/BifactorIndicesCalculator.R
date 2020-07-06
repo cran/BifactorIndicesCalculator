@@ -12,8 +12,9 @@
 #' \code{\link{bifactorIndices}}.
 #'
 #' Calculation of bifactor indices for exploratory bifactor models can also be accomplished
-#' using \code{\link{bifactorIndices_expl}} for exploratory models fit using \pkg{psych}.
-#' For ESEM models fit using \code{Mplus}, please use \code{\link{bifactorIndicesMplus_ESEM}}
+#' using \code{\link{bifactorIndices_expl}} for exploratory models fit using \pkg{psych}
+#' or using \code{\link{bifactorIndicesMplus_expl}} for exploratory models fit using
+#' \code{Mplus}. For ESEM models fit using \code{Mplus}, please use \code{\link{bifactorIndicesMplus_ESEM}}
 #'
 #' @section References:
 #' Rodriguez, A., Reise, S. P., & Haviland, M. G. (2016).
